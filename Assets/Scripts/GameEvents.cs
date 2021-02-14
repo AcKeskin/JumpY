@@ -20,7 +20,7 @@ public class GameEvents : MonoBehaviour
     public Text scoreText;
     public Text timeText;
     //public int obj_limit = 0;
-    private int div = 500, res = 0;
+    private int div = 350, res = 0;
     float speedLimit = 50;
     bool dead,starting;
     private List<GameObject> enemies, baits, boosts;
@@ -29,7 +29,7 @@ public class GameEvents : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        orange = new Color(1, 0.65f, 0.2f, 1f);
+        orange = new Color32(252,127,3,255) ;
         enemies = new List<GameObject>();
         baits = new List<GameObject>();
         boosts = new List<GameObject>();
@@ -122,16 +122,17 @@ public class GameEvents : MonoBehaviour
         if (hs <= 0 || hs < pc.score)
         {
             hs = pc.score;
-            scoreText.text = "You have a new high score " + hs + " !!";
+            scoreText.text = "You have a new high score !!\n" + hs ;
             scoreText.verticalOverflow = VerticalWrapMode.Overflow;
             PlayerPrefs.SetInt("HighScore",hs);
         }
         else 
         {
-            timeText.text = "Your high score is " + hs ;
+            scoreText.text = "Your score is " + pc.score + "\n Your highest score is\n" + hs ;
         }
         scoreText.alignment = TextAnchor.MiddleCenter;
-        scoreText.fontSize = scoreText.fontSize;
+        scoreText.fontSize = scoreText.fontSize + 15;
+        scoreText.color = Color.yellow;
     }
 
     private void gamestuff()
@@ -216,14 +217,14 @@ public class GameEvents : MonoBehaviour
         Debug.Log("Delaay!");
         timeText.enabled = true;
         Time.timeScale = 0f;
-        float pauseEndTime = Time.realtimeSinceStartup + 5;
+        float pauseEndTime = Time.realtimeSinceStartup + 4;
         while (Time.realtimeSinceStartup < pauseEndTime)
         {
             timeText.text = "Starting in\n" + (int)(pauseEndTime - Time.realtimeSinceStartup);
-            yield return 1;
+            yield return 0;
         }
         timeText.enabled = false;
         Time.timeScale = 1;
-        starting = true;
+        starting = false;
     }
 }
