@@ -13,6 +13,7 @@ public class Boost : MonoBehaviour
             collision.gameObject.GetComponent<PlayerController>().timer = time;
             collision.gameObject.GetComponent<PlayerController>().StartCoroutine("Boost");
             collision.gameObject.GetComponent<SpriteRenderer>().color = new Color32(0,188,212,255) ;
+            collision.gameObject.GetComponent<TrailRenderer>().material.color = new Color32(0,188,212,255) ;
         }
     }
 }

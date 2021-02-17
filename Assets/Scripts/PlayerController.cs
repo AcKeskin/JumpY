@@ -143,6 +143,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
         GetComponent<SpriteRenderer>().color = Color.white;
+        GetComponent<TrailRenderer>().material.color = Color.white;
         boosted = false;
         ge.UndoEnemyColors();
     }

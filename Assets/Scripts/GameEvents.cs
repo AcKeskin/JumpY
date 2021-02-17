@@ -15,30 +15,32 @@ public class GameEvents : MonoBehaviour
     public float b;*/
     private Color orange;
     private PlayerController pc;
-    public GameObject Enemy, Boost, Bait;
+    public GameObject Enemy, Boost, Bait, canvas, how2;
     public GameObject EnemyExplosion, BoostExplosion, BaitExplosion, PlayerExplosion;
-    public Text scoreText;
-    public Text timeText;
+    public Text scoreText, timeText, instruct_l, instruct_r;
+    public Image left_h, right_h;
     //public int obj_limit = 0;
     private int div = 350, res = 0;
     float speedLimit = 50;
-    bool dead,starting;
+    bool dead, starting;
     private List<GameObject> enemies, baits, boosts;
     private int enemyCount = 0, baitCount = 0, boostCount = 0;
     Vector2 screen;
     // Start is called before the first frame update
     void Start()
     {
-        orange = new Color32(252,127,3,255) ;
+        starting = true;
+        screen = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+        pc = Player.GetComponent<PlayerController>();
+        timeText.enabled = false;
+        StartCoroutine("DelayedStart");
+        orange = new Color32(252, 127, 3, 255);
         enemies = new List<GameObject>();
         baits = new List<GameObject>();
         boosts = new List<GameObject>();
-        screen = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
-        pc = Player.GetComponent<PlayerController>();
         enemyCount++;
         boostCount++;
         baitCount += 2;
-        timeText.enabled = false;
         for (int i = 0; i < enemyCount; i++)
         {
             enemies.Add(Spawn(Enemy));
@@ -48,42 +50,36 @@ public class GameEvents : MonoBehaviour
         {
             baits.Add(Spawn(Bait));
         }
-        starting = true;
-        StartCoroutine("DelayedStart");
         //obj_limit = enemyCount + baitCount + boostCount;
     }
 
     // Update is called once per frame
     void Update()
     {
-            if (pc != null && !pc.dead)
+        if (pc != null && !pc.dead)
+        {
+            gamestuff();
+            scoreText.text = "Score: " + pc.score;
+            if (pc.boosted && !timeText.enabled)
             {
-                gamestuff();
-                scoreText.text = "Score: " + pc.score;
-                if (pc.boosted && !timeText.enabled)
-                {
-                    timeText.enabled = true;
-                }
-                if (pc.boosted && timeText.enabled)
-                {
-                    timeText.text = "" + pc.timer;
-                }
-                else if (timeText.enabled && !starting)
-                {
-                    timeText.enabled = false;
-                }
+                timeText.enabled = true;
             }
-            else if (!dead)
+            if (pc.boosted && timeText.enabled)
             {
-                deadScreen();
-
-
+                timeText.text = "" + pc.timer;
             }
-            else if (pc.dead)
+            else if (timeText.enabled && !starting)
             {
-                if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
-                    SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+                timeText.enabled = false;
             }
+        }
+        else if (!dead)
+        {
+            deadScreen();
+        }
+        else if(pc == null)
+            if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
+                SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
     GameObject Spawn(GameObject go)
     {
@@ -106,7 +102,7 @@ public class GameEvents : MonoBehaviour
         float speedy = Random.Range(-speedLimit, speedLimit);
         baitRB.velocity = new Vector2(speedx, speedy);
         newBait.AddComponent<ReSpeed>();
-        if(go == Enemy && pc.boosted)
+        if (go == Enemy && pc.boosted)
         {
             newBait.GetComponent<SpriteRenderer>().color = orange;
         }
@@ -122,17 +118,33 @@ public class GameEvents : MonoBehaviour
         if (hs <= 0 || hs < pc.score)
         {
             hs = pc.score;
-            scoreText.text = "You have a new high score !!\n" + hs ;
+            scoreText.text = "You have a new high score !!\n" + hs;
             scoreText.verticalOverflow = VerticalWrapMode.Overflow;
-            PlayerPrefs.SetInt("HighScore",hs);
+            PlayerPrefs.SetInt("HighScore", hs);
         }
-        else 
+        else
         {
-            scoreText.text = "Your score is " + pc.score + "\n Your highest score is\n" + hs ;
+            scoreText.text = "Your score is " + pc.score + "\n Your highest score is\n" + hs;
         }
+        //PlayerPrefs.SetInt("HighScore", 0);
         scoreText.alignment = TextAnchor.MiddleCenter;
         scoreText.fontSize = scoreText.fontSize + 15;
         scoreText.color = Color.yellow;
+
+    }
+
+    private void introScene()
+    {
+        Debug.Log("intro");
+        RectTransform rt = canvas.GetComponent<RectTransform>();
+        left_h.rectTransform.sizeDelta = new Vector2(rt.sizeDelta.x / 2, rt.sizeDelta.y);
+        left_h.rectTransform.position = new Vector3(rt.position.x - (rt.sizeDelta.x / 4), rt.position.y, rt.position.z);
+        right_h.rectTransform.sizeDelta = new Vector2(rt.sizeDelta.x / 2, rt.sizeDelta.y);
+        right_h.rectTransform.position = new Vector3(rt.position.x + (rt.sizeDelta.x / 4), rt.position.y, rt.position.z);
+        instruct_l.rectTransform.sizeDelta = new Vector2(rt.sizeDelta.x / 3, rt.sizeDelta.y); ;
+        instruct_l.rectTransform.position = new Vector3(rt.position.x - (rt.sizeDelta.x / 4), rt.position.y, rt.position.z);
+        instruct_r.rectTransform.sizeDelta = new Vector2(rt.sizeDelta.x / 3, rt.sizeDelta.y);
+        instruct_r.rectTransform.position =  new Vector3(rt.position.x + (rt.sizeDelta.x / 4), rt.position.y, rt.position.z);
     }
 
     private void gamestuff()
@@ -141,9 +153,9 @@ public class GameEvents : MonoBehaviour
         {
             res++;
             int r = Random.Range(1, 101);
-            if (r > 60*(enemies.Count/4))
+            if (r > 60 * (enemies.Count / 4))
                 enemyCount++;
-            else if (r > 20 * (baits.Count/6))
+            else if (r > 20 * (baits.Count / 6))
                 baitCount++;
             else
             {
@@ -217,9 +229,28 @@ public class GameEvents : MonoBehaviour
         Debug.Log("Delaay!");
         timeText.enabled = true;
         Time.timeScale = 0f;
-        float pauseEndTime = Time.realtimeSinceStartup + 4;
+        int time_to = 7;
+        if(PlayerPrefs.GetInt("HighScore",0) < 1)
+            introScene();
+        else
+        {
+            time_to = 4;
+            instruct_l.enabled = false;
+            instruct_r.enabled = false;
+            right_h.enabled = false;
+            left_h.enabled = false;
+        }
+        float pauseEndTime = Time.realtimeSinceStartup + time_to;
         while (Time.realtimeSinceStartup < pauseEndTime)
         {
+
+            if (PlayerPrefs.GetInt("HighScore", 0) < 1 && (int)(pauseEndTime - Time.realtimeSinceStartup) == 3)
+            {
+                instruct_l.enabled = false;
+                instruct_r.enabled = false;
+                right_h.enabled = false;
+                left_h.enabled = false;
+            }
             timeText.text = "Starting in\n" + (int)(pauseEndTime - Time.realtimeSinceStartup);
             yield return 0;
         }
