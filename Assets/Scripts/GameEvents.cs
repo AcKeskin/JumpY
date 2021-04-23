@@ -21,7 +21,7 @@ public class GameEvents : MonoBehaviour
     public Image left_h, right_h;
     //public int obj_limit = 0;
     private int div = 350, res = 0;
-    float speedLimit = 50;
+    float speedLimit = 50,height,width;
     bool dead, starting;
     private List<GameObject> enemies, baits, boosts;
     private int enemyCount = 0, baitCount = 0, boostCount = 0;
@@ -83,6 +83,7 @@ public class GameEvents : MonoBehaviour
     }
     GameObject Spawn(GameObject go)
     {
+
         float x = Random.Range(-screen.x, screen.x);
         float y = Random.Range(-screen.y, screen.y);
         float dist = Vector2.Distance(new Vector2(x, y), Player.transform.position);
@@ -135,7 +136,6 @@ public class GameEvents : MonoBehaviour
 
     private void introScene()
     {
-        Debug.Log("intro");
         RectTransform rt = canvas.GetComponent<RectTransform>();
         left_h.rectTransform.sizeDelta = new Vector2(rt.sizeDelta.x / 2, rt.sizeDelta.y);
         left_h.rectTransform.position = new Vector3(rt.position.x - (rt.sizeDelta.x / 4), rt.position.y, rt.position.z);
@@ -226,7 +226,6 @@ public class GameEvents : MonoBehaviour
 
     IEnumerator DelayedStart()
     {
-        Debug.Log("Delaay!");
         timeText.enabled = true;
         Time.timeScale = 0f;
         int time_to = 7;

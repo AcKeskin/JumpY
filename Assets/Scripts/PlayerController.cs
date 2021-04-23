@@ -15,14 +15,18 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         ge = GameObject.FindObjectOfType<GameEvents>();
         screen = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
         score = 0;
         timer = 0;
         rb = gameObject.GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<CircleCollider2D>();
-        scalingFactor =  1920.0f / (float)Screen.height;
+       
+        scalingFactor =  (float)Screen.height / 2340.0f;
+        print(scalingFactor + " -> " + Screen.height);
         transform.localScale *= scalingFactor;
+        
     }
 
     // Update is called once per frame

@@ -66,7 +66,6 @@ public class GameBounds : MonoBehaviour
         bottomCollider.localScale = new Vector3(screenSize.x * 2, colDepth, colDepth);
         bottomCollider.position = new Vector3(cameraPos.x, cameraPos.y - screenSize.y - (bottomCollider.localScale.y * 0.5f), zPosition);
 
-        Debug.Log("right =>" + rightCollider.position + ",left =>" + leftCollider.position + ",top =>" + topCollider.position + ",bot =>" + bottomCollider);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

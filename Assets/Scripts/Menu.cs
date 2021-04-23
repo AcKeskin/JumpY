@@ -26,10 +26,7 @@ public class Menu : MonoBehaviour
         explosion[1] = BoostExplosion;
         explosion[2] = BaitExplosion;
         explosion[3] = PlayerExplosion;
-        Debug.Log(canvas_pos.x + " == " + hs.rectTransform.rect.width + " ||| " + init.x + " &&&&  "+ hs.transform.position.x);
         hs.transform.position = init;
-        Debug.Log("asdsadasd " + hs.transform.position.x);
-        Debug.Log( hs.transform.position.x);
         highestscore = PlayerPrefs.GetInt("HighScore",-1);
         if(highestscore < 0)
         {
@@ -44,8 +41,6 @@ public class Menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        Debug.Log(hs.transform.position.x);
         expo_count = GameObject.FindGameObjectsWithTag("Explosion").Length;
         if (expo_count < 3)
         {
